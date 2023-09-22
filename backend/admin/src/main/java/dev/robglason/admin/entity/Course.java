@@ -1,21 +1,45 @@
 package dev.robglason.admin.entity;
 
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
+@Entity
+@Table(name = "courses")
 public class Course {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "course_id", nullable = false)
     private Long courseId;
+
+    @Basic
+    @Column(name = "course_name", nullable = false, length = 45)
     private String courseName;
+
+    @Basic
+    @Column(name = "course_duration", nullable = false, length = 45)
     private String courseDuration;
+
+    @Basic
+    @Column(name = "course_description", nullable = false, length = 64)
     private String courseDescription;
 
-    // relationship - can combine a group or a list of students
-    private Set<Student> students = new HashSet<>();
 
     // relationship - each course can be taught by one instructor
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instructor_id", referencedColumnName = "instructor_id", nullable = false)
     private Instructor instructor;
+
+    // relationship - can combine a group or a list of students
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "enrolled_in",
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "student_id")})
+    private Set<Student> students = new HashSet<>();
 
 
     public Course() {
