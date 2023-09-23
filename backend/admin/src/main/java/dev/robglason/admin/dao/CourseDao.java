@@ -1,4 +1,4 @@
-package dao;
+package dev.robglason.admin.dao;
 
 import dev.robglason.admin.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
