@@ -48,7 +48,7 @@ public class InstructorServiceImpl implements InstructorService {
     @Override
     public Page<InstructorDTO> findInstructorsByName(String name, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Instructor> instructorPage = instructorDao.findInstructorByName(name, pageRequest);
+        Page<Instructor> instructorPage = instructorDao.findInstructorsByName(name, pageRequest);
 
         return new PageImpl<>(instructorPage.getContent().stream()
                 .map(instructor -> instructorMapper.fromInstructor(instructor))

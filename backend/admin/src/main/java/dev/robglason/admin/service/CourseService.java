@@ -16,11 +16,11 @@ public interface CourseService {
 
     void assignStudentToCourse(Long courseId, Long studentId);
 
-    Page<CourseDTO> getCoursesForStudent(Long studentId, int page, int size);
+    Page<CourseDTO> fetchCoursesForStudent(Long studentId, int page, int size);
 
-    Page<CourseDTO> getNotEnrolledInCoursesForStudent(Long studentId, int page, int size);
+    Page<CourseDTO> fetchNonEnrolledInCoursesForStudent(Long studentId, int page, int size);
 
     void removeCourse(Long courseId);
 
-    Page<CourseDTO> getCoursesForInstructor(Long instructorId, int page, int size);
+    Page<CourseDTO> fetchCoursesForInstructor(Long instructorId, int page, int size);
 }

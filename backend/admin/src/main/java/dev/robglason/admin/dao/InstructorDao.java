@@ -12,9 +12,8 @@ public interface InstructorDao extends JpaRepository<Instructor, Long> {
 
     // gets the instructor by their name (first or last)
     @Query(value = "select i from Instructor as i where i.firstName like %:name% or i.lastName like %:name%")
-    Page<Instructor> findInstructorByName(@Param("name") String name, PageRequest pageRequest);
+    Page<Instructor> findInstructorsByName(@Param("name") String name, PageRequest pageRequest);
 
-
-    @Query(value = "select i from Instructor as i where i.user.email = :email")
+    @Query(value = "select i from Instructor as i where i.user.email=:email")
     Instructor findInstructorByEmail(@Param("email") String email);
 }

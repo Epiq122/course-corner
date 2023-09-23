@@ -14,15 +14,15 @@ public interface CourseDao extends JpaRepository<Course, Long> {
 
 
     // Retrieve courses for a specific student based on their studentId
-    @Query(value = "select * from courses as c where c.course_id in (select e.course_id from enrolled_in as e where e.student_id = :studentId)", nativeQuery = true)
-    Page<Course> getCourseByStudentId(@Param("studentId") Long studentId8, Pageable pageable);
+    @Query(value = "select * from courses where course_id in (select e.course_id from enrolled_in as e where e.student_id=:studentId)", nativeQuery = true)
+    Page<Course> getCoursesByStudentId(@Param("studentId") Long studentId, Pageable pageable);
 
 
     // view the courses there not enrolled in
-    @Query(value = "select * from courses as c where c.course_id not in(select e.course_id from enrolled_in as e where e.student_id = :studentId)", nativeQuery = true)
-    Page<Course> getNotEnrolledInCoursesByStudentId(@Param("studentId") Long studentId8, Pageable pageable);
+    @Query(value = "select * from courses where course_id not in (select e.course_id from enrolled_in as e where e.student_id=:studentId)", nativeQuery = true)
+    Page<Course> getNonEnrolledInCoursesByStudentId(@Param("studentId") Long studentId, Pageable pageable);
 
     // get courses by instructor id
-    @Query(value = "select c from Course as c where c.instructor.instructorId = :instructorId")
-    Page<Course> getCourseByInstructorId(@Param("instructorId") Long instructorId, Pageable pageable);
+    @Query(value = "select c from Course as c where c.instructor.instructorId=:instructorId")
+    Page<Course> getCoursesByInstructorId(@Param("instructorId") Long instructorId, Pageable pageable);
 }

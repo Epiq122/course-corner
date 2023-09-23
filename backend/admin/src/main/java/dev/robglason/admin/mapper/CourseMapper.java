@@ -11,6 +11,10 @@ public class CourseMapper {
 
     private InstructorMapper instructorMapper;
 
+    public CourseMapper(InstructorMapper instructorMapper) {
+        this.instructorMapper = instructorMapper;
+    }
+
     public CourseDTO fromCourse(Course course) {
         CourseDTO courseDTO = new CourseDTO();
         BeanUtils.copyProperties(course, courseDTO);

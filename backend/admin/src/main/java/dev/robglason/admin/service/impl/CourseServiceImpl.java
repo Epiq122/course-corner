@@ -25,81 +25,71 @@ public class CourseServiceImpl implements CourseService {
 
 
     private CourseDao courseDao;
+
+    private CourseMapper courseMapper;
+
     private InstructorDao instructorDao;
 
     private StudentDao studentDao;
-    private CourseMapper courseMapper;
 
-    public CourseServiceImpl(CourseDao courseDao, InstructorDao instructorDao, CourseMapper courseMapper) {
+    public CourseServiceImpl(CourseDao courseDao, CourseMapper courseMapper, InstructorDao instructorDao, StudentDao studentDao) {
         this.courseDao = courseDao;
-        this.instructorDao = instructorDao;
         this.courseMapper = courseMapper;
+        this.instructorDao = instructorDao;
+        this.studentDao = studentDao;
     }
 
     @Override
     public Course loadCourseById(Long courseId) {
-        return courseDao.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course not found with id" + courseId + "."));
+        return courseDao.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course with ID " + courseId + " Not Found"));
     }
 
     @Override
     public CourseDTO createCourse(CourseDTO courseDTO) {
         Course course = courseMapper.fromCourseDTO(courseDTO);
-        Instructor instructor = instructorDao.findById(courseDTO.getInstructor().getInstructorId())
-                .orElseThrow(() -> new EntityNotFoundException("Instructor not found with id" + courseDTO.getInstructor().getInstructorId() + "."));
+        Instructor instructor = instructorDao.findById(courseDTO.getInstructor().getInstructorId()).orElseThrow(() -> new EntityNotFoundException("Instructor with ID " + courseDTO.getInstructor().getInstructorId() + " Not Found"));
         course.setInstructor(instructor);
         Course savedCourse = courseDao.save(course);
-
         return courseMapper.fromCourse(savedCourse);
     }
 
     @Override
     public CourseDTO updateCourse(CourseDTO courseDTO) {
         Course loadedCourse = loadCourseById(courseDTO.getCourseId());
-        Instructor instructor = instructorDao.findById(courseDTO.getInstructor().getInstructorId())
-                .orElseThrow(() -> new EntityNotFoundException("Instructor not found with id"
-                        + courseDTO.getInstructor().getInstructorId() + "."));
+        Instructor instructor = instructorDao.findById(courseDTO.getInstructor().getInstructorId()).orElseThrow(() -> new EntityNotFoundException("Instructor with ID " + courseDTO.getInstructor().getInstructorId() + " Not Found"));
         Course course = courseMapper.fromCourseDTO(courseDTO);
         course.setInstructor(instructor);
         course.setStudents(loadedCourse.getStudents());
         Course updatedCourse = courseDao.save(course);
-
         return courseMapper.fromCourse(updatedCourse);
-
-
     }
 
     @Override
     public Page<CourseDTO> findCoursesByCourseName(String keyword, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Course> coursesPage = courseDao.findCoursesByCourseNameContains(keyword, pageRequest);
-        return new PageImpl<>(coursesPage.getContent().stream()
-                .map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, coursesPage.getTotalElements());
-
+        return new PageImpl<>(coursesPage.getContent().stream().map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, coursesPage.getTotalElements());
     }
-
 
     @Override
     public void assignStudentToCourse(Long courseId, Long studentId) {
-        Student student = studentDao.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student not found with id" + studentId + "."));
+        Student student = studentDao.findById(studentId).orElseThrow(() -> new EntityNotFoundException("Student with ID " + studentId + " Not Found"));
         Course course = loadCourseById(courseId);
         course.assignStudentToCourse(student);
-
     }
 
     @Override
-    public Page<CourseDTO> getCoursesForStudent(Long studentId, int page, int size) {
+    public Page<CourseDTO> fetchCoursesForStudent(Long studentId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Course> studentCoursesPage = courseDao.getCourseByStudentId(studentId, pageRequest);
-        return new PageImpl<>(studentCoursesPage.getContent().stream()
-                .map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, studentCoursesPage.getTotalElements());
+        Page<Course> studentCoursesPage = courseDao.getCoursesByStudentId(studentId, pageRequest);
+        return new PageImpl<>(studentCoursesPage.getContent().stream().map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, studentCoursesPage.getTotalElements());
     }
 
     @Override
-    public Page<CourseDTO> getNotEnrolledInCoursesForStudent(Long studentId, int page, int size) {
+    public Page<CourseDTO> fetchNonEnrolledInCoursesForStudent(Long studentId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Course> notEnrolledInCoursesPage = courseDao.getNotEnrolledInCoursesByStudentId(studentId, pageRequest);
-        return new PageImpl<>(notEnrolledInCoursesPage.getContent().stream()
-                .map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, notEnrolledInCoursesPage.getTotalElements());
+        Page<Course> nonEnrolledInCoursesPage = courseDao.getNonEnrolledInCoursesByStudentId(studentId, pageRequest);
+        return new PageImpl<>(nonEnrolledInCoursesPage.getContent().stream().map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, nonEnrolledInCoursesPage.getTotalElements());
     }
 
     @Override
@@ -108,10 +98,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseDTO> getCoursesForInstructor(Long instructorId, int page, int size) {
+    public Page<CourseDTO> fetchCoursesForInstructor(Long instructorId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Course> instructorCoursesPage = courseDao.getCourseByInstructorId(instructorId, pageRequest);
-        return new PageImpl<>(instructorCoursesPage.getContent().stream()
-                .map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, instructorCoursesPage.getTotalElements());
+        Page<Course> instructorCoursesPage = courseDao.getCoursesByInstructorId(instructorId, pageRequest);
+        return new PageImpl<>(instructorCoursesPage.getContent().stream().map(course -> courseMapper.fromCourse(course)).collect(Collectors.toList()), pageRequest, instructorCoursesPage.getTotalElements());
     }
 }
