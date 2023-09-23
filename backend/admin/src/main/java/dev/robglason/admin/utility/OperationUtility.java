@@ -12,9 +12,9 @@ public class OperationUtility {
     //    ---------------- USERS --------------------------
     public static void usersOperation(UserDao userDao) {
         createUsers(userDao);
-        updateUser(userDao);
-        deleteUser(userDao);
-        getUsers(userDao);
+//        updateUser(userDao);
+//        deleteUser(userDao);
+//        getUsers(userDao);
     }
 
 
@@ -49,9 +49,9 @@ public class OperationUtility {
 
     public static void rolesOperations(RoleDao roleDao) {
         createRole(roleDao);
-        updateRole(roleDao);
-        deleteRole(roleDao);
-        getRole(roleDao);
+//        updateRole(roleDao);
+//        deleteRole(roleDao);
+//        getRole(roleDao);
 
     }
 
@@ -95,9 +95,9 @@ public class OperationUtility {
 
     public static void instructorsOperations(UserDao userDao, InstructorDao instructorDao, RoleDao roleDao) {
         createInstructors(userDao, instructorDao, roleDao);
-        updateInstructor(instructorDao);
-        removeInstructor(instructorDao);
-        getInstructors(instructorDao);
+//        updateInstructor(instructorDao);
+//        removeInstructor(instructorDao);
+//        getInstructors(instructorDao);
 
     }
 
@@ -110,12 +110,14 @@ public class OperationUtility {
         userDao.save(user1);
         user1.assignRoleToUser(role);
 
+
         Instructor instructor1 = new Instructor("instructor1FN", "instructor1LN", "Experienced", user1);
         instructorDao.save(instructor1);
 
         User user2 = new User("instructorUser2@gmail.com", "pass2");
         userDao.save(user2);
         user1.assignRoleToUser(role);
+
 
         Instructor instructor2 = new Instructor("instructor2FN", "instructor2LN", "Novice", user2);
         instructorDao.save(instructor2);
@@ -141,9 +143,9 @@ public class OperationUtility {
 
     public static void studentOperations(UserDao userDao, StudentDao studentDao, RoleDao roleDao) {
         createStudents(userDao, studentDao, roleDao);
-        updateStudent(studentDao);
-        removeStudent(studentDao);
-        getStudents(studentDao);
+//        updateStudent(studentDao);
+//        removeStudent(studentDao);
+//        getStudents(studentDao);
     }
 
 
@@ -183,11 +185,11 @@ public class OperationUtility {
     //    ---------------- Courses --------------------------
 
     public static void coursesOperations(CourseDao courseDao, InstructorDao instructorDao, StudentDao studentDao) {
-        createCourses(courseDao, instructorDao);
-        updateCourse(courseDao);
-        deleteCourse(courseDao);
-        fetchCourses(courseDao);
-        assignStudentsToCourse(courseDao, studentDao);
+//        createCourses(courseDao, instructorDao);
+//        updateCourse(courseDao);
+//        deleteCourse(courseDao);
+//        fetchCourses(courseDao);
+//        assignStudentsToCourse(courseDao, studentDao);
         fetchCoursesForStudent(courseDao);
     }
 
