@@ -1,16 +1,11 @@
 package dev.robglason.admin.utility;
 
-import dev.robglason.admin.dao.InstructorDao;
-import dev.robglason.admin.dao.RoleDao;
-import dev.robglason.admin.dao.StudentDao;
-import dev.robglason.admin.dao.UserDao;
-import dev.robglason.admin.entity.Instructor;
-import dev.robglason.admin.entity.Role;
-import dev.robglason.admin.entity.Student;
-import dev.robglason.admin.entity.User;
+import dev.robglason.admin.dao.*;
+import dev.robglason.admin.entity.*;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 public class OperationUtility {
 
@@ -57,6 +52,7 @@ public class OperationUtility {
         updateRole(roleDao);
         deleteRole(roleDao);
         getRole(roleDao);
+
     }
 
 
@@ -182,6 +178,58 @@ public class OperationUtility {
 
     private static void getStudents(StudentDao studentDao) {
         studentDao.findAll().forEach(student -> System.out.println(student.toString()));
+    }
+
+    //    ---------------- Courses --------------------------
+
+    public static void coursesOperations(CourseDao courseDao, InstructorDao instructorDao, StudentDao studentDao) {
+        createCourses(courseDao, instructorDao);
+        updateCourse(courseDao);
+        deleteCourse(courseDao);
+        fetchCourses(courseDao);
+        assignStudentsToCourse(courseDao, studentDao);
+        fetchCoursesForStudent(courseDao);
+    }
+
+
+    private static void createCourses(CourseDao courseDao, InstructorDao instructorDao) {
+        Instructor instructor = instructorDao.findById(1L).orElseThrow(() -> new EntityNotFoundException("Instructor Not Found"));
+
+        Course course1 = new Course("Ready With React", "7 Hours", "A modern react course", instructor);
+        courseDao.save(course1);
+        Course course2 = new Course("Ready With Vue", "7.5 Hours", "A cool vue course", instructor);
+        courseDao.save(course2);
+    }
+
+    private static void updateCourse(CourseDao courseDao) {
+        Course course = courseDao.findById(1L).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
+        course.setCourseDescription("16 Hours");
+        courseDao.save(course);
+
+    }
+
+    private static void deleteCourse(CourseDao courseDao) {
+        courseDao.deleteById(2L);
+    }
+
+    private static void fetchCourses(CourseDao courseDao) {
+        courseDao.findAll().forEach(course -> System.out.println(course.toString()));
+    }
+
+    private static void assignStudentsToCourse(CourseDao courseDao, StudentDao studentDao) {
+        Optional<Student> student1 = studentDao.findById(1L);
+        Optional<Student> student2 = studentDao.findById(2L);
+        Course course = courseDao.findById(1L).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
+
+        student1.ifPresent(course::assignStudentToCourse);
+        student2.ifPresent(course::assignStudentToCourse);
+        courseDao.save(course);
+
+
+    }
+
+    private static void fetchCoursesForStudent(CourseDao courseDao) {
+        courseDao.getCourseByStudentId(1L).forEach(course -> System.out.println(course.toString()));
     }
 
 
