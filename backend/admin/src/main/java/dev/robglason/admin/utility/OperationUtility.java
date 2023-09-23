@@ -1,7 +1,9 @@
 package dev.robglason.admin.utility;
 
+import dev.robglason.admin.dao.InstructorDao;
 import dev.robglason.admin.dao.RoleDao;
 import dev.robglason.admin.dao.UserDao;
+import dev.robglason.admin.entity.Instructor;
 import dev.robglason.admin.entity.Role;
 import dev.robglason.admin.entity.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,13 +17,6 @@ public class OperationUtility {
         updateUser(userDao);
         deleteUser(userDao);
         getUsers(userDao);
-    }
-
-    public static void rolesOperations(RoleDao roleDao) {
-        createRole(roleDao);
-        updateRole(roleDao);
-        deleteRole(roleDao);
-        getRole(roleDao);
     }
 
 
@@ -51,6 +46,15 @@ public class OperationUtility {
     private static void getUsers(UserDao userDao) {
         userDao.findAll().forEach(user -> System.out.println(user.toString()));
     }
+
+
+    public static void rolesOperations(RoleDao roleDao) {
+        createRole(roleDao);
+        updateRole(roleDao);
+        deleteRole(roleDao);
+        getRole(roleDao);
+    }
+
 
     private static void createRole(RoleDao roleDao) {
         Role role1 = new Role("Admin");
@@ -85,6 +89,50 @@ public class OperationUtility {
             userDao.save(user);
         });
 
+    }
+
+    public static void instructorsOperations(UserDao userDao, InstructorDao instructorDao, RoleDao roleDao) {
+        createInstructors(userDao, instructorDao, roleDao);
+        updateInstructor(instructorDao);
+        removeInstructor(instructorDao);
+        getInstructors(instructorDao);
+
+    }
+
+
+    private static void createInstructors(UserDao userDao, InstructorDao instructorDao, RoleDao roleDao) {
+        Role role = roleDao.findByName("Instructor");
+        if (role == null) throw new EntityNotFoundException("Role Not Found");
+
+        User user1 = new User("instructorUser1@gmail.com", "pass1");
+        userDao.save(user1);
+        user1.assignRoleToUser(role);
+
+        Instructor instructor1 = new Instructor("instructor1FN", "instructor1LN", "Experienced", user1);
+        instructorDao.save(instructor1);
+
+        User user2 = new User("instructorUser2@gmail.com", "pass2");
+        userDao.save(user2);
+        user1.assignRoleToUser(role);
+
+        Instructor instructor2 = new Instructor("instructor2FN", "instructor2LN", "Novice", user2);
+        instructorDao.save(instructor2);
+
+
+    }
+
+    private static void updateInstructor(InstructorDao instructorDao) {
+        Instructor instructor = instructorDao.findById(1L).orElseThrow(() -> new EntityNotFoundException("Instructor Not Found"));
+        instructor.setSummary("Juggernaut");
+        instructorDao.save(instructor);
+    }
+
+    private static void removeInstructor(InstructorDao instructorDao) {
+        instructorDao.deleteById(2L);
+    }
+
+    private static void getInstructors(InstructorDao instructorDao) {
+        instructorDao.findAll().forEach(instructor -> System.out.println(instructor.toString()));
     }
 
 
