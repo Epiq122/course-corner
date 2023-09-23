@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public void assignRoleToUser(String email, String roleName) {
         User user = loadUserByEmail(email);
         Role role = roleDao.findByName(roleName);
-        user.assignRoleToUser(role)`;
+        user.assignRoleToUser(role);
 
     }
 }
