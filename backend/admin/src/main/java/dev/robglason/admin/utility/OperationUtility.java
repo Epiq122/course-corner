@@ -2,9 +2,11 @@ package dev.robglason.admin.utility;
 
 import dev.robglason.admin.dao.InstructorDao;
 import dev.robglason.admin.dao.RoleDao;
+import dev.robglason.admin.dao.StudentDao;
 import dev.robglason.admin.dao.UserDao;
 import dev.robglason.admin.entity.Instructor;
 import dev.robglason.admin.entity.Role;
+import dev.robglason.admin.entity.Student;
 import dev.robglason.admin.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 public class OperationUtility {
 
+    //    ---------------- USERS --------------------------
     public static void usersOperation(UserDao userDao) {
         createUsers(userDao);
         updateUser(userDao);
@@ -47,6 +50,7 @@ public class OperationUtility {
         userDao.findAll().forEach(user -> System.out.println(user.toString()));
     }
 
+    //    ---------------- ROLE --------------------------
 
     public static void rolesOperations(RoleDao roleDao) {
         createRole(roleDao);
@@ -91,6 +95,8 @@ public class OperationUtility {
 
     }
 
+    //    ---------------- Instructor --------------------------
+
     public static void instructorsOperations(UserDao userDao, InstructorDao instructorDao, RoleDao roleDao) {
         createInstructors(userDao, instructorDao, roleDao);
         updateInstructor(instructorDao);
@@ -133,6 +139,49 @@ public class OperationUtility {
 
     private static void getInstructors(InstructorDao instructorDao) {
         instructorDao.findAll().forEach(instructor -> System.out.println(instructor.toString()));
+    }
+
+    //    ---------------- Students --------------------------
+
+    public static void studentOperations(UserDao userDao, StudentDao studentDao, RoleDao roleDao) {
+        createStudents(userDao, studentDao, roleDao);
+        updateStudent(studentDao);
+        removeStudent(studentDao);
+        getStudents(studentDao);
+    }
+
+
+    private static void createStudents(UserDao userDao, StudentDao studentDao, RoleDao roleDao) {
+        Role role = roleDao.findByName("Student");
+        if (role == null) throw new EntityNotFoundException("Role Not Found");
+
+        User user1 = new User("studentUser1@gmail.com", "pass1");
+        userDao.save(user1);
+        user1.assignRoleToUser(role);
+        Student student1 = new Student("student1FN", "student1LN", "Beginner", user1);
+        studentDao.save(student1);
+
+        User user2 = new User("studentUser2@gmail.com", "pass2");
+        userDao.save(user2);
+        user2.assignRoleToUser(role);
+        Student student2 = new Student("student2FN", "student2LN", "Master", user1);
+        studentDao.save(student2);
+
+    }
+
+    private static void updateStudent(StudentDao studentDao) {
+        Student student = studentDao.findById(1L).orElseThrow(() -> new EntityNotFoundException("Student Not Found"));
+        student.setFirstName("updatedStudentFN");
+        student.setLastName("updatedStudentLN");
+        studentDao.save(student);
+    }
+
+    private static void removeStudent(StudentDao studentDao) {
+        studentDao.deleteById(2L);
+    }
+
+    private static void getStudents(StudentDao studentDao) {
+        studentDao.findAll().forEach(student -> System.out.println(student.toString()));
     }
 
 
