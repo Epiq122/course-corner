@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {createLogErrorHandler} from "@angular/compiler-cli/ngcc/src/execution/tasks/completion";
 
 @Component({
   selector: 'app-courses',
@@ -8,10 +10,15 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class CoursesComponent implements OnInit {
-  constructor(private modalService: NgbModal) {
+
+  searchFormGroup!:FormGroup;
+  constructor(private modalService: NgbModal,private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
+    this.searchFormGroup = this.fb.group({
+      keyword:this.fb.control('')
+    })
   }
 
 
@@ -21,4 +28,9 @@ export class CoursesComponent implements OnInit {
   }
 
 
+  handleSearchCourses() {
+    // send a http request to the backend to get the courses
+
+
+  }
 }
