@@ -11,43 +11,66 @@
       </div>
     </div>
     <div class="box-content">
-      <div *ngIf="searchFormGroup" class="mb-22">
-        <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchCourses()">
-          <div class="input-group w-25">
-            <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search"/>
-            <button type="button" class="btn btn-outline-primary">Search</button>
+      <ng-container *ngIf="pageCourses$ | async as listCourses; else failureOrLoading">
+        <div *ngIf="searchFormGroup" class="mb-22">
+          <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchCourses()">
+            <div class="input-group w-25">
+              <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search"
+                     aria-label="Search"/>
+              <button type="button" class="btn btn-outline-primary">Search</button>
+            </div>
+          </form>
+        </div>
+        <table class="table table-striped table-hover" id="example" style="width:100%">
+
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Duration</th>
+            <th>Description</th>
+            <th>Instructor</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let courses of listCourses.content">
+            <td>{{courses.courseId}}</td>
+            <td>{{courses.courseName}}</td>
+            <td>{{courses.courseDuration}}</td>
+            <td>{{courses.courseDescription}}</td>
+            <td>{{courses.instructor.firstName}}</td>
+            <td>{{courses.instructor.lastName}}</td>
+
+
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Course Duration</th>
+            <th>Course Description</th>
+            <th>Instructor</th>
+          </tr>
+          </tfoot>
+        </table>
+      </ng-container>
+      <ng-template #failureOrLoading>
+        <ng-container *ngIf="errorMessage; else loading">
+          <div class="text-danger">
+            {{errorMessage}}
           </div>
-        </form>
-      </div>
-      <table  class="table table-striped table-hover" id="example" style="width:100%">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Duration</th>
-          <th>Description</th>
-          <th>Instructor</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-        <tr>
-          <th>Course ID</th>
-          <th>Course Name</th>
-          <th>Course Duration</th>
-          <th>Course Description</th>
-          <th>Instructor</th>
-        </tr>
-        </tfoot>
-      </table>
+        </ng-container>
+        <ng-template #loading>
+          <div class="loader shadow-sm text-muted">
+            <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+          </div>
+        </ng-template>
+      </ng-template>
     </div>
   </div>
 </div>
-<!--<div class="loader shadow-sm text-muted">
-  <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
-</div>
--->
+
 <ng-template #content let-modal>
   <div class="modal-header">
     <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Registration Form</div>

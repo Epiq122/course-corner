@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/students")
 public class StudentRestController {

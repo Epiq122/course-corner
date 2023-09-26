@@ -6,6 +6,8 @@ import dev.robglason.admin.service.CourseService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/courses")
 public class CourseRestController {
