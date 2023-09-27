@@ -116,4 +116,40 @@ export class CoursesComponent implements OnInit {
       },
     });
   }
+
+  getUpdateModel(c: Course, updateContent: any) {
+    this.fetchInstructors();
+    this.updateCourseFormGroup = this.fb.group({
+      courseId: [c.courseId, Validators.required],
+      courseName: [c.courseName, Validators.required],
+      courseDuration: [c.courseDuration, Validators.required],
+      courseDescription: [c.courseDescription, Validators.required],
+      instructor: [c.instructor, Validators.required],
+    });
+    this.defaultInstructor =
+      this.updateCourseFormGroup.controls['instructor'].value;
+    this.modalService.open(updateContent, { size: 'xl' });
+  }
+
+  onUpdateCourse(updateModal: any) {
+    this.submitted = true;
+    if (this.updateCourseFormGroup.invalid) return;
+    this.courseService
+      .updateCourse(
+        this.updateCourseFormGroup.value,
+        this.updateCourseFormGroup.value.courseId
+      )
+      .subscribe({
+        next: () => {
+          alert('success updating course');
+          this.handleSearchCourses();
+          this.courseFormGroup.reset();
+          this.submitted = false;
+          updateModal.close();
+        },
+        error: (err) => {
+          alert(err.message);
+        },
+      });
+  }
 }
