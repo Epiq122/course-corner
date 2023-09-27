@@ -8,6 +8,7 @@ import { PageResponse } from '../../model/page.response.model';
 import { Course } from '../../model/course.model';
 import { InstructorsService } from '../../services/instructors.service';
 import { Instructor } from '../../model/instructor.model';
+import { error } from '@angular/compiler-cli/src/transformers/util';
 
 @Component({
   selector: 'app-courses',
@@ -16,14 +17,16 @@ import { Instructor } from '../../model/instructor.model';
 })
 export class CoursesComponent implements OnInit {
   searchFormGroup!: FormGroup;
-  courseFromGroup!: FormGroup;
-  // observable to contain the result of the query
+  courseFormGroup!: FormGroup;
+  updateCourseFormGroup!: FormGroup;
   pageCourses$!: Observable<PageResponse<Course>>;
   instructors$!: Observable<Array<Instructor>>;
   currentPage: number = 0;
   pageSize: number = 5;
   errorMessage!: string;
   errorInstructorMessage!: string;
+  submitted: boolean = false;
+  defaultInstructor!: Instructor;
 
   constructor(
     private modalService: NgbModal,
@@ -36,7 +39,7 @@ export class CoursesComponent implements OnInit {
     this.searchFormGroup = this.fb.group({
       keyword: this.fb.control(''),
     });
-    this.courseFromGroup = this.fb.group({
+    this.courseFormGroup = this.fb.group({
       courseName: ['', Validators.required],
       courseDuration: ['', Validators.required],
       courseDescription: ['', Validators.required],
@@ -46,6 +49,7 @@ export class CoursesComponent implements OnInit {
   }
 
   getModal(content: any) {
+    this.submitted = false;
     this.fetchInstructors();
     this.modalService.open(content, { size: 'xl' });
   }
@@ -67,10 +71,10 @@ export class CoursesComponent implements OnInit {
     this.handleSearchCourses();
   }
 
-  handleDeleteCourse(courses: Course) {
-    let confirmation = confirm('Are you sure?');
-    if (!confirmation) return;
-    this.courseService.deleteCourse(courses.courseId).subscribe({
+  handleDeleteCourse(c: Course) {
+    let conf = confirm('Are you sure?');
+    if (!conf) return;
+    this.courseService.deleteCourse(c.courseId).subscribe({
       next: () => {
         this.handleSearchCourses();
       },
@@ -81,10 +85,6 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  onCloseModal(modal: any) {}
-
-  onSaveModal(modal: any) {}
-
   fetchInstructors() {
     this.instructors$ = this.instructorService.findAllInstructors().pipe(
       catchError((err) => {
@@ -92,5 +92,28 @@ export class CoursesComponent implements OnInit {
         return throwError(err);
       })
     );
+  }
+
+  onCloseModal(modal: any) {
+    modal.close();
+    this.courseFormGroup.reset();
+  }
+
+  onSaveCourse(modal: any) {
+    this.submitted = true;
+    console.log(this.courseFormGroup);
+    if (this.courseFormGroup.invalid) return;
+    this.courseService.saveCourse(this.courseFormGroup.value).subscribe({
+      next: () => {
+        alert('success Saving Course');
+        this.handleSearchCourses();
+        this.courseFormGroup.reset();
+        this.submitted = false;
+        modal.close();
+      },
+      error: (err) => {
+        alert(err.message);
+      },
+    });
   }
 }

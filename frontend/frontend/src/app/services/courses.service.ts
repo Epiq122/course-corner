@@ -31,4 +31,8 @@ export class CoursesService {
   public deleteCourse(courseId: number) {
     return this.http.delete(environment.backendHost + '/courses/' + courseId);
   }
+
+  public saveCourse(course: Course): Observable<Course> {
+    return this.http.post<Course>(environment.backendHost + '/courses', course);
+  }
 }

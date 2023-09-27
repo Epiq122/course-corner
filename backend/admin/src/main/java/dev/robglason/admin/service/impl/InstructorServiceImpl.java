@@ -25,8 +25,9 @@ import java.util.stream.Collectors;
 public class InstructorServiceImpl implements InstructorService {
 
 
-    InstructorDao instructorDao;
-    InstructorMapper instructorMapper;
+    private InstructorDao instructorDao;
+
+    private InstructorMapper instructorMapper;
 
     private UserService userService;
 
@@ -41,19 +42,14 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public Instructor loadInstructorById(Long instructorId) {
-        return instructorDao.findById(instructorId).orElseThrow(() -> new EntityNotFoundException("Instructor with id " + instructorId + " not found"));
-
+        return instructorDao.findById(instructorId).orElseThrow(() -> new EntityNotFoundException("Instructor with ID" + instructorId + " not found"));
     }
 
     @Override
     public Page<InstructorDTO> findInstructorsByName(String name, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Instructor> instructorPage = instructorDao.findInstructorsByName(name, pageRequest);
-
-        return new PageImpl<>(instructorPage.getContent().stream()
-                .map(instructor -> instructorMapper.fromInstructor(instructor))
-                .collect(Collectors.toList()), pageRequest, instructorPage.getTotalElements());
-
+        Page<Instructor> instructorsPage = instructorDao.findInstructorsByName(name, pageRequest);
+        return new PageImpl<>(instructorsPage.getContent().stream().map(instructor -> instructorMapper.fromInstructor(instructor)).collect(Collectors.toList()), pageRequest, instructorsPage.getTotalElements());
     }
 
     @Override
@@ -68,7 +64,6 @@ public class InstructorServiceImpl implements InstructorService {
         Instructor instructor = instructorMapper.fromInstructorDTO(instructorDTO);
         instructor.setUser(user);
         Instructor savedInstructor = instructorDao.save(instructor);
-
         return instructorMapper.fromInstructor(savedInstructor);
     }
 
@@ -84,8 +79,7 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public List<InstructorDTO> getInstructors() {
-        return instructorDao.findAll().stream().map(instructor -> instructorMapper.fromInstructor(instructor))
-                .collect(Collectors.toList());
+        return instructorDao.findAll().stream().map(instructor -> instructorMapper.fromInstructor(instructor)).collect(Collectors.toList());
     }
 
     @Override
@@ -93,9 +87,7 @@ public class InstructorServiceImpl implements InstructorService {
         Instructor instructor = loadInstructorById(instructorId);
         for (Course course : instructor.getCourses()) {
             courseService.removeCourse(course.getCourseId());
-
         }
         instructorDao.deleteById(instructorId);
-
     }
 }
