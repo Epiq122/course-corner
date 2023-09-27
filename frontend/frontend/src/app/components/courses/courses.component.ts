@@ -17,7 +17,7 @@ export class CoursesComponent implements OnInit {
   // observable to contain the result of the query
   pageCourses$!: Observable<PageResponse<Course>>;
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 5;
   errorMessage!: string;
 
   constructor(
@@ -48,5 +48,24 @@ export class CoursesComponent implements OnInit {
           return throwError(err);
         })
       );
+  }
+
+  gotoPage(page: number) {
+    this.currentPage = page;
+    this.handleSearchCourses();
+  }
+
+  handleDeleteCourse(courses: Course) {
+    let confirmation = confirm('Are you sure?');
+    if (!confirmation) return;
+    this.courseService.deleteCourse(courses.courseId).subscribe({
+      next: () => {
+        this.handleSearchCourses();
+      },
+      error: (err) => {
+        alert(err.message);
+        console.log(err);
+      },
+    });
   }
 }
