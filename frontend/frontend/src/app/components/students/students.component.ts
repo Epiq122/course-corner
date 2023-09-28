@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, Observable, throwError } from 'rxjs';
 import { PageResponse } from '../../model/page.response.model';
 import { Student } from '../../model/student.model';
 import { StudentsService } from '../../services/students.service';
+import { EmailExistsValidator } from '../../validators/emailexists.validator';
+import { UsersService } from '../../services/users.service';
 
 @Component({
   selector: 'app-students',
@@ -15,22 +17,37 @@ export class StudentsComponent implements OnInit {
   searchFormGroup!: FormGroup;
   studentFormGroup!: FormGroup;
   pageStudents$!: Observable<PageResponse<Student>>;
-  students$!: Observable<Array<Student>>;
   errorMessage!: string;
   submitted: boolean = false;
   currentPage: number = 0;
-  pageSize: number = 3;
-  errorStudentMessage!: string;
+  pageSize: number = 5;
 
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private studentService: StudentsService
+    private studentService: StudentsService,
+    private userService: UsersService
   ) {}
 
   ngOnInit(): void {
     this.searchFormGroup = this.fb.group({
       keyword: this.fb.control(''),
+    });
+    this.studentFormGroup = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      level: ['', Validators.required], // this is because its technically creating a new user
+      user: this.fb.group({
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+          ],
+          [EmailExistsValidator.validate(this.userService)],
+        ],
+        password: ['', Validators.required],
+      }),
     });
     this.handleSearchStudents();
   }
@@ -70,5 +87,28 @@ export class StudentsComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  onSaveStudent(modal: any) {
+    this.submitted = true;
+    console.log(this.studentFormGroup);
+    if (this.studentFormGroup.invalid) return;
+    this.studentService.saveStudent(this.studentFormGroup.value).subscribe({
+      next: () => {
+        alert('success creating Student');
+        this.handleSearchStudents();
+        this.studentFormGroup.reset();
+        this.submitted = false;
+        modal.close();
+      },
+      error: (err) => {
+        alert(err.message);
+      },
+    });
+  }
+
+  onCloseModal(modal: any) {
+    modal.close();
+    this.studentFormGroup.reset();
   }
 }
