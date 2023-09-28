@@ -12,7 +12,7 @@
         </div>
         <div class="box-content">
             <ng-container *ngIf="pageInstructors$ | async as listInstructors; else failureOrLoading">
-                <div *ngIf="searchFormGroup" class="mb-2">
+                <div class="mb-2">
                     <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchInstructors()">
                         <div class="input-group w-25">
                             <input type="search" formControlName="keyword" class="form-control rounded mx-2"
@@ -33,16 +33,27 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let ins of listInstructors.content ">
-                        <th>{{ins.instructorId}}</th>
-                        <th>{{ins.firstName}}</th>
-                        <th>{{ins.lastName}}</th>
-                        <th>{{ins.summary}}</th>
+                        <td>{{ins.instructorId}}</td>
+                        <td>{{ins.firstName}}</td>
+                        <td>{{ins.lastName}}</td>
+                        <td>{{ins.summary}}</td>
                     </tr>
                     </tbody>
                     <tfoot>
-
+                    <tr>
+                        <th>Instructor Id</th>
+                        <th>Instructor First Name</th>
+                        <th>Instructor Last Name</th>
+                        <th>Instructor Summary</th>
+                    </tr>
                     </tfoot>
                 </table>
+                <ul class="nav nav-pills">
+                    <li *ngFor="let item of [].constructor(listInstructors.totalPages); let page=index">
+                        <a [ngClass]="page==currentPage? 'btn-info':'btn-outline-info'" (click)="gotoPage(page)"
+                           class="btn mb-1 ms-1 mt-1">{{page}}</a>
+                    </li>
+                </ul>
             </ng-container>
             <ng-template #failureOrLoading>
                 <ng-container *ngIf="errorMessage; else loading">
@@ -58,6 +69,7 @@
         </div>
     </div>
 </div>
+
 <ng-template #content let-modal>
     <div class="modal-header">
         <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Registration Form</div>
@@ -71,24 +83,18 @@
                     <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
                 </div>
             </div>
-
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="text-muted">Second Name</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
+                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="sname">
                 </div>
             </div>
-
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="text-muted">Last Name</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
+                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="lname">
                 </div>
             </div>
-
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="text-muted">Gender</label>
@@ -99,26 +105,22 @@
                     </select>
                 </div>
             </div>
-
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="text-muted">Date of Birth</label>
-                    <input type="date" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
+                    <input type="date" class="form-control form-font rounded-0 mt-1 mb-3" name="dob">
                 </div>
             </div>
-
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="text-muted">Address</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
+                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="address">
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-secondary" (click)="modal.close('Save click')">Close</button>
+        <button type="button" class="btn btn-sm btn-secondary" (click)="modal.dismiss('Close click')">Close</button>
         <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
     </div>
 </ng-template>

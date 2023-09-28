@@ -17,7 +17,7 @@ export class TeachersComponent implements OnInit {
   // instructors$!: Observable<Array<Instructor>>;
   pageInstructors$!: Observable<PageResponse<Instructor>>;
   currentPage: number = 0;
-  pageSize: number = 5;
+  pageSize: number = 2;
   errorMessage!: string;
 
   constructor(
@@ -47,5 +47,10 @@ export class TeachersComponent implements OnInit {
           return throwError(err);
         })
       );
+  }
+
+  gotoPage(page: number) {
+    this.currentPage = page;
+    this.handleSearchInstructors();
   }
 }
