@@ -35,4 +35,10 @@ export class InstructorsService {
         pageSize
     );
   }
+
+  public deleteInstructor(instructorId: number) {
+    return this.http.delete(
+      environment.backendHost + '/instructors/' + instructorId
+    );
+  }
 }

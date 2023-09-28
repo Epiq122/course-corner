@@ -37,6 +37,11 @@
                         <td>{{ins.firstName}}</td>
                         <td>{{ins.lastName}}</td>
                         <td>{{ins.summary}}</td>
+                        <td>
+                            <button (click)="handleDeleteInstructor(ins)" class="btn btn-danger">
+                                <i class="bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                     <tfoot>
