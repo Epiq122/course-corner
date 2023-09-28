@@ -6,6 +6,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { Instructor } from '../../model/instructor.model';
 import { PageResponse } from '../../model/page.response.model';
 import { Course } from '../../model/course.model';
+import { EmailExistsValidator } from '../../validators/emailexists.validator';
+import { UsersService } from '../../services/users.service';
 
 @Component({
   selector: 'app-teachers',
@@ -24,7 +26,8 @@ export class TeachersComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private instructorsService: InstructorsService
+    private instructorsService: InstructorsService,
+    private userService: UsersService
   ) {}
 
   ngOnInit(): void {
@@ -37,8 +40,12 @@ export class TeachersComponent implements OnInit {
       summary: ['', Validators.required], // this is because its technically creating a new user
       user: this.fb.group({
         email: [
-          Validators.required,
-          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+          ],
+          [EmailExistsValidator.validate(this.userService)],
         ],
         password: ['', Validators.required],
       }),

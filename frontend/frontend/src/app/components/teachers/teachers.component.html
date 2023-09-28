@@ -145,6 +145,9 @@
                                 <div *ngIf="instructorFormGroup.get('user.email')!.errors?.['pattern']">Please enter a
                                     valid Email
                                 </div>
+                                <div *ngIf="instructorFormGroup.get('user.email')!.errors?.['emailAlreadyExists']">Email
+                                    already exists
+                                </div>
                             </div>
                         </div>
                     </div>
