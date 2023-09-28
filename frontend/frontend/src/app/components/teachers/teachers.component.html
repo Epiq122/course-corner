@@ -29,6 +29,7 @@
                         <th>Instructor First Name</th>
                         <th>Instructor Last Name</th>
                         <th>Instructor Summary</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,6 +51,7 @@
                         <th>Instructor First Name</th>
                         <th>Instructor Last Name</th>
                         <th>Instructor Summary</th>
+                        <th>Action</th>
                     </tr>
                     </tfoot>
                 </table>
@@ -77,55 +79,96 @@
 
 <ng-template #content let-modal>
     <div class="modal-header">
-        <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Registration Form</div>
+        <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Instructor Form</div>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">First Name</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="fname">
+    <form [formGroup]="instructorFormGroup" method="post">
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">First Name</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid': submitted && instructorFormGroup.controls['firstName'].errors}"
+                               formControlName="firstName">
+                        <div *ngIf="submitted && instructorFormGroup.controls['firstName'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="instructorFormGroup.controls['firstName'].errors?.['required']">First Name is
+                                Required
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">Second Name</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="sname">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">Last Name</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid': submitted && instructorFormGroup.controls['lastName'].errors}"
+                               formControlName="lastName">
+                        <div *ngIf="submitted && instructorFormGroup.controls['lastName'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="instructorFormGroup.controls['lastName'].errors?.['required']">Last Name is
+                                Required
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">Last Name</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="lname">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">Summary</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid': submitted && instructorFormGroup.controls['summary'].errors}"
+                               formControlName="summary">
+                        <div *ngIf="submitted && instructorFormGroup.controls['summary'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="instructorFormGroup.controls['summary'].errors?.['required']">Summary is
+                                Required
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">Gender</label>
-                    <select class="form-select form-font rounded-0 mt-1 mb-3">
-                        <option selected>Choose...</option>
-                        <option value="1">Male</option>
-                        <option value="2">Female</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">Date of Birth</label>
-                    <input type="date" class="form-control form-font rounded-0 mt-1 mb-3" name="dob">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-muted">Address</label>
-                    <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="address">
+                <div formGroupName="user">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="text-muted">Email</label>
+                            <input type="email" class="form-control form-font rounded-0 mt-1 mb-3"
+                                   [ngClass]="{'is-invalid': submitted && instructorFormGroup.get('user.email')?.errors}"
+                                   formControlName="email">
+                            <div *ngIf="submitted && instructorFormGroup.get('user.email')?.errors"
+                                 class="invalid-feedback">
+                                <div *ngIf="instructorFormGroup.get('user.email')!.errors?.['required']">Email is
+                                    Required
+                                </div>
+
+                                <div *ngIf="instructorFormGroup.get('user.email')!.errors?.['pattern']">Please enter a
+                                    valid Email
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="text-muted">Password</label>
+                            <input type="password" class="form-control form-font rounded-0 mt-1 mb-3"
+                                   [ngClass]="{'is-invalid': submitted && instructorFormGroup.get('user.password')?.errors}"
+                                   formControlName="password">
+                            <div *ngIf="submitted && instructorFormGroup.get('user.password')?.errors"
+                                 class="invalid-feedback">
+                                <div *ngIf="instructorFormGroup.get('user.password')!.errors?.['required']">Password is
+                                    Required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-secondary" (click)="modal.dismiss('Close click')">Close</button>
-        <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onCloseModal(modal)">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSaveInstructor(modal)">Save changes
+            </button>
+        </div>
+    </form>
 </ng-template>

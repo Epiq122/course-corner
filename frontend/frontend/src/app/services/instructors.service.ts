@@ -41,4 +41,11 @@ export class InstructorsService {
       environment.backendHost + '/instructors/' + instructorId
     );
   }
+
+  public onSaveInstructor(instructor: Instructor): Observable<Instructor> {
+    return this.http.post<Instructor>(
+      environment.backendHost + '/instructors',
+      instructor
+    );
+  }
 }

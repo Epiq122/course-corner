@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InstructorsService } from '../../services/instructors.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Instructor } from '../../model/instructor.model';
@@ -14,11 +14,12 @@ import { Course } from '../../model/course.model';
 })
 export class TeachersComponent implements OnInit {
   searchFormGroup!: FormGroup;
-  // instructors$!: Observable<Array<Instructor>>;
+  instructorFormGroup!: FormGroup;
   pageInstructors$!: Observable<PageResponse<Instructor>>;
   currentPage: number = 0;
   pageSize: number = 2;
   errorMessage!: string;
+  submitted: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -30,10 +31,26 @@ export class TeachersComponent implements OnInit {
     this.searchFormGroup = this.fb.group({
       keyword: this.fb.control(''),
     });
+    this.instructorFormGroup = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      summary: ['', Validators.required],
+      email: ['', Validators.email],
+      password: ['', Validators.required],
+      // this is because its technically creating a new user
+      user: this.fb.group({
+        email: [
+          Validators.required,
+          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+        ],
+        password: ['', Validators.required],
+      }),
+    });
     this.handleSearchInstructors();
   }
 
   getModal(content: any) {
+    this.submitted = false;
     this.modalService.open(content, { size: 'xl' });
   }
 
@@ -66,5 +83,30 @@ export class TeachersComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  onCloseModal(modal: any) {
+    modal.close();
+    this.instructorFormGroup.reset();
+  }
+
+  onSaveInstructor(modal: any) {
+    this.submitted = true;
+    console.log(this.instructorFormGroup);
+    if (this.instructorFormGroup.invalid) return;
+    this.instructorsService
+      .onSaveInstructor(this.instructorFormGroup.value)
+      .subscribe({
+        next: () => {
+          alert('success creating Instructor');
+          this.handleSearchInstructors();
+          this.instructorFormGroup.reset();
+          this.submitted = false;
+          modal.close();
+        },
+        error: (err) => {
+          alert(err.message);
+        },
+      });
   }
 }
