@@ -57,4 +57,18 @@ export class StudentsComponent implements OnInit {
     this.currentPage = page;
     this.handleSearchStudents();
   }
+
+  handleDeleteStudent(s: Student) {
+    let conf = confirm('Are you sure?');
+    if (!conf) return;
+    this.studentService.deleteStudent(s.studentId).subscribe({
+      next: () => {
+        this.handleSearchStudents();
+      },
+      error: (err) => {
+        alert(err.message);
+        console.log(err);
+      },
+    });
+  }
 }

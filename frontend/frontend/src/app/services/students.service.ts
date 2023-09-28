@@ -33,4 +33,15 @@ export class StudentsService {
         pageSize
     );
   }
+
+  public deleteStudent(studentId: number) {
+    return this.http.delete(environment.backendHost + '/students/' + studentId);
+  }
+
+  public saveStudent(student: Student): Observable<Student> {
+    return this.http.post<Student>(
+      environment.backendHost + '/students',
+      student
+    );
+  }
 }

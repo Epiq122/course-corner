@@ -43,6 +43,11 @@
                         <th>{{s.firstName}}</th>
                         <th>{{s.lastName}}</th>
                         <th>{{s.level}}l</th>
+                        <td>
+                            <button (click)="handleDeleteStudent(s)" class="btn btn-danger">
+                                <i class="bi-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                     </tfoot>
 
