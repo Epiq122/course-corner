@@ -8,6 +8,7 @@ import { PageResponse } from '../../model/page.response.model';
 import { Course } from '../../model/course.model';
 import { EmailExistsValidator } from '../../validators/emailexists.validator';
 import { UsersService } from '../../services/users.service';
+import { CoursesService } from '../../services/courses.service';
 
 @Component({
   selector: 'app-teachers',
@@ -18,16 +19,24 @@ export class TeachersComponent implements OnInit {
   searchFormGroup!: FormGroup;
   instructorFormGroup!: FormGroup;
   pageInstructors$!: Observable<PageResponse<Instructor>>;
+  modalInstructor!: Instructor;
   currentPage: number = 0;
-  pageSize: number = 2;
+  pageSize: number = 3;
+
+  coursesCurrentPage: number = 0;
+  coursesPageSize: number = 3;
+  coursesErrorMessage!: string;
+
   errorMessage!: string;
   submitted: boolean = false;
+  pageCourses$!: Observable<PageResponse<Course>>;
 
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
     private instructorsService: InstructorsService,
-    private userService: UsersService
+    private userService: UsersService,
+    private courseService: CoursesService
   ) {}
 
   ngOnInit(): void {
@@ -112,5 +121,32 @@ export class TeachersComponent implements OnInit {
           alert(err.message);
         },
       });
+  }
+
+  getCoursesModal(ins: Instructor, coursesContent: any) {
+    this.coursesCurrentPage = 0;
+    this.modalInstructor = ins;
+    this.handleSearchCourses(ins);
+    this.modalService.open(coursesContent, { size: 'xl' });
+  }
+
+  handleSearchCourses(ins: Instructor) {
+    this.pageCourses$ = this.courseService
+      .getCoursesByInstructor(
+        ins.instructorId,
+        this.coursesCurrentPage,
+        this.coursesPageSize
+      )
+      .pipe(
+        catchError((err) => {
+          this.coursesErrorMessage = err.message;
+          return throwError(err);
+        })
+      );
+  }
+
+  gotoCoursesPage(page: number) {
+    this.coursesCurrentPage = page;
+    this.handleSearchCourses(this.modalInstructor);
   }
 }
