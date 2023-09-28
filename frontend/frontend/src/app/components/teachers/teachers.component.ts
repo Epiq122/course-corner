@@ -34,10 +34,7 @@ export class TeachersComponent implements OnInit {
     this.instructorFormGroup = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      summary: ['', Validators.required],
-      email: ['', Validators.email],
-      password: ['', Validators.required],
-      // this is because its technically creating a new user
+      summary: ['', Validators.required], // this is because its technically creating a new user
       user: this.fb.group({
         email: [
           Validators.required,
