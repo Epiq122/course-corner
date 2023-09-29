@@ -37,4 +37,9 @@ export class CoursesStudentsComponent implements OnInit {
         })
       );
   }
+
+  gotoPage(page: number) {
+    this.currentPage = page;
+    this.handleSearchStudentCourses();
+  }
 }
