@@ -28,6 +28,7 @@ export class CoursesStudentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.studentId = this.route.snapshot.params['id'];
+    this.handleSearchStudentCourses();
     this.handleSearchNonEnrolledInCourses();
   }
 
@@ -65,5 +66,19 @@ export class CoursesStudentsComponent implements OnInit {
   gotoPageForOtherCourses(page: number) {
     this.otherCoursesCurrentPage = page;
     this.handleSearchNonEnrolledInCourses();
+  }
+
+  enrollIn(c: Course) {
+    this.courseService
+      .enrollStudentInCourse(c.courseId, this.studentId)
+      .subscribe({
+        next: () => {
+          this.handleSearchStudentCourses();
+          this.handleSearchNonEnrolledInCourses();
+        },
+        error: (err) => {
+          alert(err.message);
+        },
+      });
   }
 }

@@ -91,4 +91,15 @@ export class CoursesService {
         pageSize
     );
   }
+
+  public enrollStudentInCourse(courseId: number, studentId: number) {
+    return this.http.post(
+      environment.backendHost +
+        '/courses/' +
+        courseId +
+        '/enroll/students/' +
+        studentId,
+      null
+    );
+  }
 }
