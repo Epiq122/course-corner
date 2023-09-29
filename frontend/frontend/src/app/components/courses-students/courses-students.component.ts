@@ -61,4 +61,9 @@ export class CoursesStudentsComponent implements OnInit {
         })
       );
   }
+
+  gotoPageForOtherCourses(page: number) {
+    this.otherCoursesCurrentPage = page;
+    this.handleSearchNonEnrolledInCourses();
+  }
 }
