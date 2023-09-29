@@ -13,6 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CoursesInstructorComponent } from './components/courses-instructor/courses-instructor.component';
+import { CoursesStudentsComponent } from './components/courses-students/courses-students.component';
 
 const appRoutes: Routes = [
   { path: '', component: CoursesComponent },
@@ -20,6 +21,7 @@ const appRoutes: Routes = [
   { path: 'courses', component: CoursesComponent },
   { path: 'teachers', component: TeachersComponent },
   { path: 'instructor-courses/:id', component: CoursesInstructorComponent },
+  { path: 'student-courses/:id', component: CoursesStudentsComponent },
   { path: 'navbar', component: NavbarComponent },
   { path: 'header', component: HeaderComponent },
 ];
@@ -33,6 +35,7 @@ const appRoutes: Routes = [
     NavbarComponent,
     HeaderComponent,
     CoursesInstructorComponent,
+    CoursesStudentsComponent,
   ],
   imports: [
     BrowserModule,

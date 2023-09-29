@@ -127,7 +127,7 @@ export class CoursesInstructorComponent implements OnInit {
         next: () => {
           alert('success updating course');
           this.handleSearchInstructorCourses();
-          this.courseFormGroup.reset();
+          this.updateCourseFormGroup.reset();
           this.submitted = false;
           updateModal.close();
         },
