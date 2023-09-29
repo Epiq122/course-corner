@@ -13,10 +13,13 @@ import { CoursesService } from '../../services/courses.service';
 export class CoursesStudentsComponent implements OnInit {
   studentId!: number;
   pageCourses!: Observable<PageResponse<Course>>;
+  pageOtherCourses!: Observable<PageResponse<Course>>;
+  otherCoursesCurrentPage: number = 0;
+  otherCoursesPageSize: number = 5;
   currentPage: number = 0;
   pageSize: number = 5;
   errorMessage!: string;
-  submitted: boolean = false;
+  otherCoursesErrorMessage!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +28,7 @@ export class CoursesStudentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.studentId = this.route.snapshot.params['id'];
+    this.handleSearchNonEnrolledInCourses();
   }
 
   handleSearchStudentCourses() {
@@ -41,5 +45,20 @@ export class CoursesStudentsComponent implements OnInit {
   gotoPage(page: number) {
     this.currentPage = page;
     this.handleSearchStudentCourses();
+  }
+
+  handleSearchNonEnrolledInCourses() {
+    this.pageOtherCourses = this.courseService
+      .getNotEnrolledInCoursesByStudent(
+        this.studentId,
+        this.otherCoursesCurrentPage,
+        this.otherCoursesPageSize
+      )
+      .pipe(
+        catchError((err) => {
+          this.otherCoursesErrorMessage = err.message;
+          return throwError(err);
+        })
+      );
   }
 }
