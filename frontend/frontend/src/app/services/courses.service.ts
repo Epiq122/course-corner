@@ -58,4 +58,21 @@ export class CoursesService {
         pageSize
     );
   }
+
+  // for the students-courses
+  public getCoursesByStudent(
+    studentId: number,
+    currentPage: number,
+    pageSize: number
+  ): Observable<PageResponse<Course>> {
+    return this.http.get<PageResponse<Course>>(
+      environment.backendHost +
+        '/students/' +
+        studentId +
+        '/courses?page=' +
+        currentPage +
+        '&size=' +
+        pageSize
+    );
+  }
 }
