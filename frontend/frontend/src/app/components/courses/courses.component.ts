@@ -117,7 +117,7 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  getUpdateModel(c: Course, updateContent: any) {
+  getUpdateModal(c: Course, updateContent: any) {
     this.fetchInstructors();
     this.updateCourseFormGroup = this.fb.group({
       courseId: [c.courseId, Validators.required],
@@ -151,5 +151,10 @@ export class CoursesComponent implements OnInit {
           alert(err.message);
         },
       });
+  }
+
+  onCloseUpdateModal(updateModal: any) {
+    updateModal.close();
+    this.updateCourseFormGroup.reset();
   }
 }

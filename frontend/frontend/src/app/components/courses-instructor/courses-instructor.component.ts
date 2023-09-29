@@ -22,6 +22,7 @@ export class CoursesInstructorComponent implements OnInit {
   pageSize: number = 5;
   errorMessage!: string;
   submitted: boolean = false;
+  updateCourseFormGroup!: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -101,5 +102,38 @@ export class CoursesInstructorComponent implements OnInit {
         alert(err.message);
       },
     });
+  }
+
+  getUpdateModal(c: Course, updateContent: any) {
+    this.updateCourseFormGroup = this.fb.group({
+      courseId: [c.courseId, Validators.required],
+      courseName: [c.courseName, Validators.required],
+      courseDuration: [c.courseDuration, Validators.required],
+      courseDescription: [c.courseDescription, Validators.required],
+      instructor: [c.instructor, Validators.required],
+    });
+    this.modalService.open(updateContent, { size: 'xl' });
+  }
+
+  onUpdateCourse(updateModal: any) {
+    this.submitted = true;
+    if (this.updateCourseFormGroup.invalid) return;
+    this.courseService
+      .updateCourse(
+        this.updateCourseFormGroup.value,
+        this.updateCourseFormGroup.value.courseId
+      )
+      .subscribe({
+        next: () => {
+          alert('success updating course');
+          this.handleSearchInstructorCourses();
+          this.courseFormGroup.reset();
+          this.submitted = false;
+          updateModal.close();
+        },
+        error: (err) => {
+          alert(err.message);
+        },
+      });
   }
 }
