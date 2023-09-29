@@ -57,4 +57,9 @@ export class CoursesInstructorComponent implements OnInit {
         })
       );
   }
+
+  gotoPage(page: number) {
+    this.currentPage = page;
+    this.handleSearchInstructorCourses();
+  }
 }
