@@ -6,7 +6,9 @@
                     These are your current courses
                 </div>
                 <div class="box-header-button">
-                    <!-- modal to create a new course -->
+                    <div class="btn-group btn-group-small">
+                        <div class="btn btn-sm btn-primary-gradient" (click)="getModal(content)">New course</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,3 +54,69 @@
         </div>
     </div>
 </div>
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Course Form</div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <form [formGroup]="courseFormGroup" method="post">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">Course Name</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid' : submitted && courseFormGroup.controls['courseName'].errors}"
+                               formControlName="courseName">
+                        <div *ngIf="submitted && courseFormGroup.controls['courseName'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="courseFormGroup.controls['courseName'].errors?.['required']">Course Name is
+                                Required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">Course Duration</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid' : submitted && courseFormGroup.controls['courseDuration'].errors}"
+                               formControlName="courseDuration">
+                        <div *ngIf="submitted && courseFormGroup.controls['courseDuration'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="courseFormGroup.controls['courseDuration'].errors?.['required']">Course Duration
+                                is
+                                Required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-muted">Course Description</label>
+                        <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                               [ngClass]="{'is-invalid' : submitted && courseFormGroup.controls['courseDescription'].errors}"
+                               formControlName="courseDescription">
+                        <div *ngIf="submitted && courseFormGroup.controls['courseDescription'].errors"
+                             class="invalid-feedback">
+                            <div *ngIf="courseFormGroup.controls['courseDescription'].errors?.['required']">Course
+                                Description
+                                is
+                                Required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onCloseModal(modal)">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSaveCourse(modal)">Save changes</button>
+        </div>
+    </form>
+</ng-template>

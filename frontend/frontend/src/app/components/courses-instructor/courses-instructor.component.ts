@@ -5,6 +5,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { PageResponse } from '../../model/page.response.model';
 import { Course } from '../../model/course.model';
 import { CoursesService } from '../../services/courses.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-courses-instructor',
@@ -14,14 +16,18 @@ import { CoursesService } from '../../services/courses.service';
 export class CoursesInstructorComponent implements OnInit {
   instructorId!: number;
   currentInstructor!: Instructor;
+  courseFormGroup!: FormGroup;
   pageCourses!: Observable<PageResponse<Course>>;
   currentPage: number = 0;
   pageSize: number = 5;
   errorMessage!: string;
+  submitted: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private courseService: CoursesService
+    private courseService: CoursesService,
+    private modalService: NgbModal,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -61,5 +67,39 @@ export class CoursesInstructorComponent implements OnInit {
   gotoPage(page: number) {
     this.currentPage = page;
     this.handleSearchInstructorCourses();
+  }
+
+  getModal(content: any) {
+    this.submitted = false;
+    this.courseFormGroup = this.fb.group({
+      courseName: ['', Validators.required],
+      courseDuration: ['', Validators.required],
+      courseDescription: ['', Validators.required],
+      instructor: [this.currentInstructor, Validators.required],
+    });
+    this.modalService.open(content, { size: 'xl' });
+  }
+
+  onCloseModal(modal: any) {
+    modal.close();
+    this.courseFormGroup.reset();
+  }
+
+  onSaveCourse(modal: any) {
+    this.submitted = true;
+    console.log(this.courseFormGroup);
+    if (this.courseFormGroup.invalid) return;
+    this.courseService.saveCourse(this.courseFormGroup.value).subscribe({
+      next: () => {
+        alert('success creating Course');
+        this.handleSearchInstructorCourses();
+        this.courseFormGroup.reset();
+        this.submitted = false;
+        modal.close();
+      },
+      error: (err) => {
+        alert(err.message);
+      },
+    });
   }
 }
