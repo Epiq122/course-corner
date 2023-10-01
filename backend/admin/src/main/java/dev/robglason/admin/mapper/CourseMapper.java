@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseMapper {
 
-    private InstructorMapper instructorMapper;
+    private final InstructorMapper instructorMapper;
 
     public CourseMapper(InstructorMapper instructorMapper) {
         this.instructorMapper = instructorMapper;

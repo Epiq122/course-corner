@@ -18,10 +18,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // disables the cors
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().anMatchers().authenticated();
-        return http.build();
+//        http.csrf(AbstractHttpConfigurer::disable);
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.authorizeRequests().anMatchers().authenticated();
+//        return http.build();
 
     }
 
